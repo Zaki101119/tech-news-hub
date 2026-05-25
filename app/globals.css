@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #030712 50%, #090514 100%);
+  color: #f3f4f6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+/* Neon mesh background glow objects */
+.ambient-glow-1 {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0) 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: floatAmbient 12s infinite alternate ease-in-out;
+}
+
+.ambient-glow-2 {
+  position: absolute;
+  top: 40%;
+  right: 15%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0) 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  animation: floatAmbient 18s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes floatAmbient {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(40px, -40px) scale(1.1);
+  }
+}
+
+/* Premium 3D Interactive Card Tilt Effect */
+.card-perspective {
+  perspective: 1000px;
+}
+
+.card-tilt {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.card-tilt:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+  box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15), 0 0 20px rgba(139, 92, 246, 0.1);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.card-inner-3d {
+  transform: translateZ(20px);
+}
+
+/* Glassmorphism system */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-nav {
+  background: rgba(3, 7, 18, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-b: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Text Shimmer Effect */
+.text-shimmer {
+  background: linear-gradient(to right, #22d3ee 20%, #a78bfa 40%, #a78bfa 60%, #22d3ee 80%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Neon buttons */
+.btn-neon {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-neon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.btn-neon:hover::before {
+  left: 100%;
+}
+
+.btn-neon:hover {
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+  transform: translateY(-2px);
+}

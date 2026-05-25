@@ -1,0 +1,28 @@
+{
+  "name": "tech-news-hub",
+  "version": "1.0.0",
+  "description": "Automated tech news platform with easy publishing",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate-news": "node scripts/generateNews.js",
+    "schedule-posts": "node scripts/scheduler.js"
+  },
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "next": "^14.2.0",
+    "supabase": "^1.145.0",
+    "@supabase/supabase-js": "^2.43.0",
+    "axios": "^1.7.0",
+    "node-cron": "^3.0.3",
+    "date-fns": "^3.3.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}
