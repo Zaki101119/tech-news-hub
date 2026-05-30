@@ -50,20 +50,26 @@ async function scrapeCategory(query, category) {
 
     const articles = response.data.articles || []
     let addedCount = 0
+    let errors = []
 
     for (const article of articles) {
       if (!article.title || article.title.includes('[Removed]')) continue
       const slug = generateSlug(article.title)
       
       // Check if already exists
-      const { data: existing } = await supabase
+      const { data: existing, error: checkError } = await supabase
         .from('articles')
         .select('id')
         .eq('slug', slug)
         .single()
 
+      if (checkError && checkError.code !== 'PGRST116') {
+        errors.push(`Check error for ${slug}: ${checkError.message}`)
+        continue
+      }
+
       if (!existing) {
-        await supabase.from('articles').insert([
+        const { error: insertError } = await supabase.from('articles').insert([
           {
             title: article.title,
             excerpt: article.description || article.title,
@@ -75,13 +81,23 @@ async function scrapeCategory(query, category) {
             source_url: article.url,
           },
         ])
-        addedCount++
+        
+        if (insertError) {
+          errors.push(`Insert error for ${slug}: ${insertError.message}`)
+        } else {
+          addedCount++
+        }
       }
     }
+    
+    if (errors.length > 0) {
+      throw new Error(errors.join(' | '))
+    }
+    
     return addedCount
   } catch (error) {
     console.error(`Error scraping ${category}:`, error.message)
-    return 0
+    throw error
   }
 }
 
@@ -103,18 +119,27 @@ export async function GET(request) {
 
   console.log('🚀 Triggering scheduled news scraping API...')
 
-  const aiCount = await scrapeCategory('(AI OR "artificial intelligence" OR "machine learning")', 'AI Tools')
-  const devCount = await scrapeCategory('(smartphone OR "tech device" OR gadget OR laptop OR tablet)', 'Tech Devices')
-  const indCount = await scrapeCategory('technology OR startup OR innovation', 'Industry News')
+  try {
+    const aiCount = await scrapeCategory('(AI OR "artificial intelligence" OR "machine learning")', 'AI Tools')
+    const devCount = await scrapeCategory('(smartphone OR "tech device" OR gadget OR laptop OR tablet)', 'Tech Devices')
+    const indCount = await scrapeCategory('technology OR startup OR innovation', 'Industry News')
 
-  return NextResponse.json({
-    success: true,
-    mode: isSupabaseConfigured ? 'supabase production' : 'local mock simulation',
-    timestamp: new Date().toISOString(),
-    added: {
-      'AI Tools': aiCount,
-      'Tech Devices': devCount,
-      'Industry News': indCount,
-    }
-  })
+    return NextResponse.json({
+      success: true,
+      mode: isSupabaseConfigured ? 'supabase production' : 'local mock simulation',
+      timestamp: new Date().toISOString(),
+      added: {
+        'AI Tools': aiCount,
+        'Tech Devices': devCount,
+        'Industry News': indCount,
+      }
+    })
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      mode: isSupabaseConfigured ? 'supabase production' : 'local mock simulation',
+      timestamp: new Date().toISOString(),
+      error: error.message
+    }, { status: 500 })
+  }
 }
