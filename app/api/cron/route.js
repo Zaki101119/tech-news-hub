@@ -86,14 +86,17 @@ async function scrapeCategory(query, category) {
 }
 
 export async function GET(request) {
-  // Verify authorization secret (if configured in production Vercel)
+  // Verify authorization secret (supports Vercel header AND manual browser query parameter)
+  const { searchParams } = new URL(request.url)
+  const querySecret = searchParams.get('secret')
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
   
   if (
     cronSecret && 
     cronSecret !== 'your_cron_secret_here' &&
-    authHeader !== `Bearer ${cronSecret}`
+    authHeader !== `Bearer ${cronSecret}` &&
+    querySecret !== cronSecret
   ) {
     return new Response('Unauthorized', { status: 401 })
   }
